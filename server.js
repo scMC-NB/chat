@@ -8,7 +8,7 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server, path: '/ws' });
 
-// 静态资源
+// 静态资源服务
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 路由兜底
@@ -38,7 +38,7 @@ wss.on('connection', (ws) => {
   let currentUser = null;
   clients.push(ws);
 
-  // *** 推送历史消息 ***
+  // 1. 刚连上时，推送历史消息
   ws.send(JSON.stringify({ type: 'history', messages: data.messages }));
 
   ws.on('message', (raw) => {
@@ -68,13 +68,14 @@ wss.on('connection', (ws) => {
         ws._user = currentUser;
         ws.send(JSON.stringify({ type: 'login_success', user: { username: currentUser.username, role: currentUser.role } }));
         
-        // 更新在线列表
+        // 2. 登录成功后，广播系统提示 & 更新在线列表
+        broadcast({ type: 'system', text: `${currentUser.username} 加入了聊天` });
         broadcast({ type: 'users', users: clients.filter(c => c._user).map(c => c._user) });
         break;
 
       // 发送消息 (持久化到 data.json)
       case 'message':
-        if (!currentUser) return;
+        if (!currentUser) { ws.send(JSON.stringify({ type: 'system', text: '请先登录' })); return; }
         if (currentUser.banned) { ws.send(JSON.stringify({ type: 'system', text: '你已被禁止发言' })); return; }
         
         const newMsg = { username: currentUser.username, room: msg.room, text: msg.text, time: Date.now() };
@@ -86,6 +87,7 @@ wss.on('connection', (ws) => {
 
       // 好友申请
       case 'friend_request':
+        if (!currentUser) return;
         const targetUser = findUser(msg.to);
         if (!targetUser) { ws.send(JSON.stringify({ type: 'system', text: '目标用户不存在' })); return; }
         const targetClient = clients.find(c => c._user?.username === msg.to);
@@ -96,13 +98,14 @@ wss.on('connection', (ws) => {
 
       // 接受好友 (持久化到 data.json)
       case 'friend_accept':
+        if (!currentUser) return;
         const requesterUser = findUser(msg.from);
         if (requesterUser) {
           data.friends.push({ from: requesterUser.username, to: currentUser.username });
           data.friends.push({ from: currentUser.username, to: requesterUser.username });
           saveData();
           
-          // 刷新双方列表
+          // 3. 接受好友后，给双方推送好友列表
           clients.filter(c => c._user?.username === requesterUser.username).forEach(c => 
             c.send(JSON.stringify({ type: 'friend_added', friends: data.friends.filter(f => f.from === requesterUser.username).map(f => f.to) }))
           );
@@ -110,24 +113,20 @@ wss.on('connection', (ws) => {
         }
         break;
 
-      // 拒绝好友
       case 'friend_reject':
-        // 仅关闭弹窗，不做其他操作
         break;
 
-      // 管理员：获取统计
+      // 管理员功能
       case 'admin_stats':
         if (currentUser?.role !== 'admin') return;
         ws.send(JSON.stringify({ type: 'admin_stats', totalUsers: data.users.length, totalMessages: data.messages.length, onlineUsers: clients.length }));
         break;
 
-      // 管理员：获取用户列表
       case 'admin_users':
         if (currentUser?.role !== 'admin') return;
         ws.send(JSON.stringify({ type: 'admin_users', users: data.users }));
         break;
 
-      // 管理员：封禁/解封
       case 'admin_ban':
         if (currentUser?.role !== 'admin') return;
         const banU = findUser(msg.username);
@@ -144,6 +143,8 @@ wss.on('connection', (ws) => {
   // 断开连接
   ws.on('close', () => {
     if (currentUser) {
+      // 4. 离开时广播系统提示 & 更新在线列表
+      broadcast({ type: 'system', text: `${currentUser.username} 离开了聊天` });
       broadcast({ type: 'users', users: clients.filter(c => c._user).map(c => c._user) });
     }
     const idx = clients.indexOf(ws);

@@ -1,0 +1,49 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif; background: #f5f5f5; color: #111; height: 100vh; overflow: hidden; }
+
+#authScreen { display: flex; align-items: center; justify-content: center; height: 100vh; background: #f5f5f5; }
+.auth-box { width: 360px; background: #fff; border-radius: 12px; padding: 32px 28px 28px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); }
+.auth-box h2 { text-align: center; margin-bottom: 18px; font-size: 20px; color: #07c160; }
+.auth-tabs { display: flex; margin-bottom: 18px; border-bottom: 1px solid #eee; }
+.auth-tab { flex: 1; text-align: center; padding: 10px 0; cursor: pointer; color: #999; font-size: 15px; }
+.auth-tab.active { color: #07c160; border-bottom: 2px solid #07c160; }
+
+.auth-form { display: none; flex-direction: column; gap: 12px; }
+.auth-form.active { display: flex; }
+.auth-form input { padding: 10px 12px; border: 1px solid #e5e5e5; border-radius: 8px; font-size: 14px; outline: none; }
+.auth-form input:focus { border-color: #07c160; }
+.auth-form button { background: #07c160; color: #fff; border: none; border-radius: 8px; padding: 10px; font-size: 15px; cursor: pointer; }
+.auth-form button:hover { background: #06ad56; }
+
+#chatScreen { display: none; height: 100vh; }
+.sidebar { width: 220px; background: #f0f0f0; border-right: 1px solid #e5e5e5; display: flex; flex-direction: column; padding: 12px 0; }
+.sidebar h3 { font-size: 14px; color: #888; padding: 8px 16px; margin-top: 8px; }
+.room-item, .friend-item, .user-item { padding: 9px 16px; cursor: pointer; font-size: 14px; }
+.room-item:hover, .friend-item:hover, .user-item:hover { background: #e8e8e8; }
+.room-item.active { background: #fff; color: #07c160; border-left: 3px solid #07c160; }
+
+.chat-main { flex: 1; display: flex; flex-direction: column; background: #f5f5f5; }
+.chat-header { height: 52px; background: #fff; border-bottom: 1px solid #e5e5e5; display: flex; align-items: center; padding: 0 16px; font-size: 16px; font-weight: 500; }
+.chat-header button { margin-left: 10px; background: #07c160; color: #fff; border: none; border-radius: 6px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
+
+#messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+.message { max-width: 72%; padding: 10px 14px; border-radius: 12px; font-size: 14px; line-height: 1.6; word-break: break-word; white-space: pre-wrap; }
+.message.own { align-self: flex-end; background: #95ec69; color: #111; border-bottom-right-radius: 4px; }
+.message:not(.own) { align-self: flex-start; background: #fff; color: #111; border-bottom-left-radius: 4px; }
+.message.system { align-self: center; background: transparent; color: #999; font-size: 12px; padding: 4px 10px; }
+
+.input-area { background: #fff; border-top: 1px solid #e5e5e5; padding: 10px 16px; display: flex; gap: 10px; }
+.input-area input { flex: 1; border: 1px solid #e5e5e5; border-radius: 8px; padding: 9px 12px; font-size: 14px; outline: none; }
+.input-area button { background: #07c160; color: #fff; border: none; border-radius: 8px; padding: 0 18px; cursor: pointer; }
+
+#adminPanel { display: none; height: 100vh; background: #f5f5f5; padding: 24px; overflow-y: auto; }
+.admin-section { background: #fff; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+.admin-section table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.admin-section th, .admin-section td { border: 1px solid #eee; padding: 8px; text-align: left; }
+.admin-section button { background: #07c160; color: #fff; border: none; border-radius: 6px; padding: 4px 10px; cursor: pointer; }
+
+.modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.35); align-items: center; justify-content: center; }
+.modal-content { background: #fff; border-radius: 12px; padding: 20px; width: 320px; }
+.modal-content p { margin-bottom: 12px; font-size: 14px; color: #555; }
+.modal-content input { width: 100%; padding: 9px 10px; border: 1px solid #e5e5e5; border-radius: 8px; margin-bottom: 10px; }
+.modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }

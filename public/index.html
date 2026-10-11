@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>聪明聊</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- 1. 登录注册页 -->
+  <div id="authScreen">
+    <div class="auth-box">
+      <h2>聪明聊</h2>
+      <div class="auth-tabs">
+        <div class="auth-tab active" data-tab="login">登录</div>
+        <div class="auth-tab" data-tab="register">注册</div>
+      </div>
+      <form id="loginForm" class="auth-form active">
+        <input type="text" id="loginUsername" placeholder="用户名" required>
+        <input type="password" id="loginPassword" placeholder="密码" required>
+        <button type="submit">登录</button>
+      </form>
+      <form id="registerForm" class="auth-form">
+        <input type="text" id="registerUsername" placeholder="用户名" required>
+        <input type="password" id="registerPassword" placeholder="密码" required>
+        <input type="email" id="registerEmail" placeholder="邮箱（选填）">
+        <button type="submit">注册</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. 聊天主界面 -->
+  <div id="chatScreen">
+    <div class="sidebar">
+      <h3>房间</h3>
+      <div id="roomList"></div>
+      <h3>好友</h3>
+      <div id="friendList" style="padding: 10px 16px; font-size: 13px; color: #999;">暂无好友</div>
+      <h3>在线</h3>
+      <div id="userList"></div>
+    </div>
+    <div class="chat-main">
+      <div class="chat-header">
+        <span id="currentRoomTitle">公共聊天</span>
+        <button id="addFriendBtn">添加好友</button>
+        <button id="adminBtn">管理后台</button>
+      </div>
+      <div id="messages"></div>
+      <div class="input-area">
+        <input type="text" id="messageInput" placeholder="输入消息...">
+        <button id="sendBtn">发送</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. 添加好友弹窗 -->
+  <div id="addFriendModal" class="modal">
+    <div class="modal-content">
+      <h3>添加好友</h3>
+      <input type="text" id="friendNameInput" placeholder="对方用户名">
+      <div class="modal-buttons">
+        <button id="confirmAddFriend">确定</button>
+        <button id="cancelAddFriend">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. 好友申请弹窗 -->
+  <div id="friendRequestModal" class="modal">
+    <div class="modal-content">
+      <h3>好友请求</h3>
+      <p id="requestText" style="margin-bottom: 15px; color: #666;"></p>
+      <div class="modal-buttons">
+        <button id="acceptRequest" style="background:#07c160; color:#fff; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;">同意</button>
+        <button id="rejectRequest" style="background:#eee; color:#333; border:none; padding:8px 16px; border-radius:6px; cursor:pointer;">拒绝</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. 管理后台 -->
+  <div id="adminPanel">
+    <button id="backToChat">返回聊天</button>
+    <h2>管理后台</h2>
+    <div class="admin-section">
+      <h3>统计</h3>
+      <p>用户：<span id="statUsers">-</span></p>
+      <p>消息：<span id="statMessages">-</span></p>
+      <p>在线：<span id="statOnline">-</span></p>
+    </div>
+    <div class="admin-section">
+      <h3>用户管理</h3>
+      <table>
+        <thead><tr><th>用户名</th><th>角色</th><th>状态</th><th>操作</th></tr></thead>
+        <tbody id="adminUserTable"></tbody>
+      </table>
+    </div>
+    <div class="admin-section">
+      <h3>最近消息</h3>
+      <table>
+        <thead><tr><th>用户</th><th>房间</th><th>内容</th><th>时间</th></tr></thead>
+        <tbody id="adminMessageTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
